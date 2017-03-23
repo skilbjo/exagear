@@ -1,0 +1,67 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          exagear
+# Required-Start:    binfmt-support
+# Required-Stop:     binfmt-support
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: registers ExaGear as a handler for x86 binaries
+# Description:       registers ExaGear as a handler for x86 binaries
+### END INIT INFO
+
+#
+# Copyright (c) 2013 "Elbrus Technologies" LLC. All rights reserved.
+#
+# This script comes with NO warranty, not even for MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.
+#
+
+. /etc/binfmt-x86.conf
+
+DESC="ExaGear"
+NAME="x86_guest"
+BINFMT_PREFIX="/proc/sys/fs/binfmt_misc"
+test -d $BINFMT_PREFIX || BINFMT_PREFIX="/var/binfmt_misc"
+BINFMT_CONTROL=${BINFMT_PREFIX}"/$NAME"
+
+MAGIC="\\x7f\\x45\\x4c\\x46\\x01\\x01\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x00\\x03\\x00"
+ MASK="\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\xfc\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\xfc\\xff\\xff\\xff"
+
+UBT_WRAPPER="/opt/exagear/bin/ubt_wrapper"
+OPTIONS="P"
+
+if [ "$ENABLE_SUID" = "Y" ] ; then
+    UBT_WRAPPER="/opt/exagear/bin/ubt_wrapper_suid"
+    OPTIONS="PC"
+fi
+
+case "$1" in
+    start|restart|reload|force-reload)
+        echo -n "Starting $DESC: "
+        [ -e $BINFMT_CONTROL ] && echo -1 > $BINFMT_CONTROL
+        echo ":$NAME:M::$MAGIC:$MASK:$UBT_WRAPPER:$OPTIONS" > ${BINFMT_PREFIX}/register
+        echo "$NAME."
+        ;;
+
+    stop)
+        [ -e $BINFMT_CONTROL ] && echo -1 > $BINFMT_CONTROL
+        ;;
+
+    status)
+        if [ -e $BINFMT_CONTROL ] ; then
+            echo "$NAME is enabled"
+            exit 0
+        else
+            echo "$NAME is disabled"
+            exit 1
+        fi
+        ;;
+
+    *)
+        echo "Usage: $NAME {start|stop|restart|reload|force-reload|status}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

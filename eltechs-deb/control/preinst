@@ -1,0 +1,33 @@
+#!/bin/sh
+test_binary=$(mktemp)
+echo f0VMRgEBAQAAAAAAAAAAAAIAKAABAAAAVIAAADQAAADIAAAAAAIABTQAIAABACgABgADAAEAAAAAAAAAAIAAAACAAACAAAAAgAAAAAUAAAAAgAAACgKg4wEaoOMAIKDjMjCg48BwoOMAAADvCgJQ4wAAoAMBAKATAXCg4wAAAO9BEwAAAGFlYWJpAAEJAAAABgEIAQAuc3ltdGFiAC5zdHJ0YWIALnNoc3RydGFiAC50ZXh0AC5BUk0uYXR0cmlidXRlcwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGwAAAAEAAAAGAAAAVIAAAFQAAAAsAAAAAAAAAAAAAAAEAAAAAAAAACEAAAADAABwAAAAAAAAAACAAAAAFAAAAAAAAAAAAAAAAQAAAAAAAAARAAAAAwAAAAAAAAAAAAAAlAAAADEAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAAIAAAAAAAAAAAAAALgBAADgAAAABQAAAAYAAAAEAAAAEAAAAAkAAAADAAAAAAAAAAAAAACYAgAAWwAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFSAAAAAAAAAAwABAAAAAAAAAAAAAAAAAAMAAgABAAAAAAAAAAAAAAAEAPH/DAAAAFSAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAQA8f8PAAAAgAABAAAAAAAQAAEAGgAAAIAAAQAAAAAAEAABACgAAACAAAEAAAAAABAAAQA0AAAAVIAAAAAAAAAQAAEAOwAAAIAAAQAAAAAAEAABAEcAAACAAAEAAAAAABAAAQBPAAAAgAABAAAAAAAQAAEAVgAAAIAAAQAAAAAAEAABAABtZW1fdGVzdC5vACRhAF9ic3NfZW5kX18AX19ic3Nfc3RhcnRfXwBfX2Jzc19lbmRfXwBfc3RhcnQAX19ic3Nfc3RhcnQAX19lbmRfXwBfZWRhdGEAX2VuZAA= | base64 --decode > $test_binary
+chmod +x $test_binary
+$test_binary
+ret=$?
+rm -f $test_binary
+
+if [ "$ret" -ne "0" ]
+then
+    echo ""
+    echo "=============================================================================================="
+    echo "| ExaGear requires at least 3 GiB of user space memory to be available for applicatons.      |"
+    echo "| However, this system provides less user space memory.                                      |"
+    echo "| ExaGear supports 2G/2G user/kernel memory split configuration via *exagear-mem2g* package. |"
+    echo "| Please contact package mantainers at Eltechs to obtain *exagear-mem2g* package.            |"
+    echo "=============================================================================================="
+    echo ""
+    exit 1
+fi
+
+if [ $(arch) != "armv7l" ] && [ $(arch) != "aarch64" ];
+then
+    echo ""
+    echo "=============================================================================================="
+    echo "| ExaGear requires armv7l instruction set to be supported. This machine supports $(arch) instruction set."
+    echo "| Possibly you are trying to run ExaGear on armv6 or non-ARM machine"
+    echo "=============================================================================================="
+    echo ""
+    exit 1
+fi
+
+

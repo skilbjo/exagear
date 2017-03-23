@@ -1,0 +1,25 @@
+#! /bin/bash
+
+#
+# This script lists available ExaGear guest images.
+#
+# Copyright (c) 2013 "Elbrus Technologies" LLC. All rights reserved.
+#
+# This script comes with NO warranty, not even for MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.
+#
+
+installation_dir="/opt/exagear/images/"
+
+have_images=
+
+echo "Installed guest images:"
+
+for img in $(find $installation_dir -mindepth 1 -maxdepth 1 -type d) ; do
+    echo "${img:${#installation_dir}}"
+    have_images=y
+done
+
+if ! [ "$have_images" = "y" ] ; then
+    echo "There are no guest images installed in $installation_dir"
+fi

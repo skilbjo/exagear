@@ -1,0 +1,134 @@
+#! /bin/bash
+
+#
+# This script starts a shell in an ExaGear guest system.
+#
+# The scripts starts /bin/bash (or any other shell specified by the environment
+# variable $SHELL) under ExaGear and sets the current directory to the root of
+# the guest file system. This can be considered as a way to log into an ExaGear
+# guest system.
+#
+# If there is only one ExaGear guest installed, the shell is started inside it
+# automatically; otherwise you have to specify the name of the guest image
+# that you intend to use.
+#
+# Copyright (c) 2013 "Elbrus Technologies" LLC. All rights reserved.
+#
+# This script comes with NO warranty, not even for MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.
+#
+
+installation_dir="/opt/exagear/images/"
+ubt=${UBT_OVERRIDE:-"/opt/exagear/bin/ubt_x32a32_al"}
+
+image_dir=
+images_count=0
+
+function find_guest_image {
+    for img in $(find $installation_dir -mindepth 1 -maxdepth 1 -type d) ; do
+        image_dir="$img"
+        images_count=$(( images_count+1 ))
+    done
+
+    if [ $images_count -eq 0 ] ; then
+        echo "There are no guest images in $installation_dir"
+        echo "Please make sure that you have installed packages with guest system templates."
+        exit 1
+    fi
+
+    if [ $images_count -gt 1 ] ; then
+        echo "You have multiple guest images installed. Use"
+        echo "    exagear name_of_guest_image"
+        echo "to start the shell in one of them."
+        exagear-ls
+        exit 1
+    fi
+}
+
+function print_usage_and_exit {
+    echo 'Usage: exagear [image] [ -- command]'
+    exagear-ls
+    exit 0
+}
+
+args=""
+while test ${#} -gt 0
+do
+    if [ "$1" == "--usage" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+        print_usage_and_exit
+    elif [ "$1" == "--" ]; then
+	shift
+        command="$1"
+        shift
+        break
+    else
+        if ! [ -z "$image_dir" ]; then
+            print_usage_and_exit
+        fi
+
+	image_dir="${installation_dir}$1";
+	if ! [ -d "$image_dir" ];then
+            echo "There is no guest image $image_dir"
+            exagear-ls
+	    exit 1
+	fi
+    fi
+
+    shift
+done
+
+if [ -z "$image_dir" ]; then
+    find_guest_image
+fi
+
+if [ -z "$command" ]; then
+    if [ -n "$SHELL" ] && [ -x "${image_dir}${SHELL}" ]; then
+	command="$SHELL"
+    else
+        command="/bin/bash"
+    fi
+fi
+
+vpaths_list="$image_dir/.exagear/vpaths-list"
+opaths_list="$image_dir/.exagear/opaths-list"
+
+use_binfmt_misc=
+use_upstart_integration=
+
+SERVICE=`which service`
+if [ -z "$SERVICE" ]; then
+    SERVICE="/usr/sbin/service"
+fi
+
+
+if $SERVICE exagear status > /dev/null ; then
+    use_binfmt_misc="--use-binfmt_misc"
+fi
+
+use_upstart_integration="--opaths-list ${opaths_list}"
+
+cd ~
+args=`for arg in "$@"; do printf "%q " "$arg"; done`
+
+unset LC_CTYPE
+unset LC_NUMERIC
+unset LC_TIME
+unset LC_COLLATE
+unset LC_MONETARY
+unset LC_MESSAGES
+unset LC_PAPER
+unset LC_NAME
+unset LC_ADDRESS
+unset LC_TELEPHONE
+unset LC_MEASUREMENT
+unset LC_IDENTIFICATION
+unset LC_ALL
+unset LANGUAGE
+unset LANG
+
+$ubt --path-prefix $image_dir --vpaths-list $vpaths_list -- \
+  /bin/echo "Starting $command $args in the guest image $image_dir" || \
+  echo "Failed to start Exagear. Please check that file $ubt exists and has executable permission"
+
+eval $ubt --path-prefix $image_dir --vpaths-list $vpaths_list $use_upstart_integration $use_binfmt_misc -- \
+   $command $args
