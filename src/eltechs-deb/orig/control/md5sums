@@ -1,0 +1,12 @@
+1c138a2aff15e5744d0b1fc458d9fdf9  opt/exagear/bin/actool
+49a01957e3bf498b678046ee5ff8f926  opt/exagear/bin/ubt_wrapper
+064224a48eb73475a2a098dca3041810  opt/exagear/bin/ubt_x32a32_al
+e392390a03c42d41c671073d69586f38  opt/exagear/share/doc/licenses/EULA
+d0326737e228c802f4f815737f9edba1  opt/exagear/share/doc/user-guide.pdf
+7d27ce1fd96a50f68fc177a6e9b23c4d  usr/bin/exagear
+cc656d83f3d3ca8e13ce735889a9ac06  usr/bin/exagear-ls
+62ce5a4c12e229601f258982178839b8  usr/share/applications/exagear.desktop
+e50e761fc3fa37c8dedd9a124bca2630  usr/share/icons/hicolor/128x128/apps/exagear.png
+cf7992026ca6cade424316e957c305c6  usr/share/icons/hicolor/16x16/apps/exagear.png
+526b64f974ab4fcce32146571031d544  usr/share/icons/hicolor/32x32/apps/exagear.png
+2f8e99d5215b0120ee6fd413cef63185  usr/share/icons/hicolor/64x64/apps/exagear.png

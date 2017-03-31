@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=ExaGear
+GenericName=ExaGear Desktop
+Comment=ExaGear Desktop
+Exec=/etc/alternatives/x-terminal-emulator -e /usr/bin/exagear
+Icon=exagear
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=System
+Vendor=Eltechs

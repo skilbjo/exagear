@@ -1,5 +1,33 @@
 # exagear
 
+## Why
+
+I'd like to run Mesos but Mesos only compiles on x86 machines.
+
+Exagear is a virtual machine that translates x86 instructions to an
+ARM instruction set. However exagear is meant for a debian system,
+not arch linux.
+
+## Install
+
+Clone this repo on the target ARM device.
+
+    bin/pack-deb src/eltechs-deb/arch-linux/
+    mv fixed.deb exagear.deb
+    bin/pack-deb src/ubuntu-deb/arch-linux/
+    mv fixed.deb ubuntu.deb
+    sudo bin/install-on-archlinux
+
+## Use
+
+What is available: `exagear ls`
+
+Turn exagear on: `exagear`
+
+Turn exagear off: `exagear` ;; TODO is this the correct command?
+
+## Debug
+
     System memory configuration is determined as 2g/2g
     ARCH=armv7l
     ls: cannot access '/opt/exagear/images/': No such file or directory

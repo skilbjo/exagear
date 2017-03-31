@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -eou pipefail
+
+echo "sample deb_file: src/eltechs-deb/orig"
+
+tmp_dir="tmp"
+deb_file="fixed.deb"
+
+read -p "Pack $tmp_dir in $(pwd) to be named $deb_file ?" -n1 -r
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+
+  dpkg-deb -b "$tmp_dir" "$deb_file"
+fi
+
+echo "Now run install-on-archlinux"
+
+
+

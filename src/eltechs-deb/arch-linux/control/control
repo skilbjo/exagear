@@ -1,0 +1,13 @@
+Package: exagear
+Version: 2526
+Architecture: armhf
+Maintainer: ExaGear distribution maintainers <support@eltechs.com>
+Installed-Size: 3316
+Conflicts: exagear-armv8, exagear-legacy, exagear-legacy-mem2g, exagear-mem2g, ubt
+Provides: exagear-virtual
+Section: misc
+Priority: extra
+Homepage: http://eltechs.com
+Description: ExaGear binary translation system
+  ExaGear by Elbrus Technologies enables running standard PC software
+  compiled for Intel x86, on ARM-based computers.

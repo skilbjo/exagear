@@ -1,0 +1,24 @@
+#!/bin/sh
+sysctl -p /etc/sysctl.d/10-inotify.conf > /dev/null
+
+for DESKTOP_DIR in `find /home -maxdepth 2 -mindepth 2 -type d -name Desktop`
+do
+  	LAUNCHER=${DESKTOP_DIR}/exagear.desktop
+	OWNERSHIP=`stat -c '%U:%G' ${DESKTOP_DIR}`
+        echo '#!/usr/bin/env xdg-open' > ${LAUNCHER}
+        cat /usr/share/applications/exagear.desktop >> ${LAUNCHER}
+	chown ${OWNERSHIP} ${LAUNCHER}
+        chmod 0775 ${LAUNCHER}
+done
+
+chmod 0777 /var/log/exagear/
+
+# Automatically added by dh_installinit
+if [ -x "/etc/init.d/exagear" ]; then
+	if [ ! -e "/etc/init/exagear.conf" ]; then
+		update-rc.d exagear defaults >/dev/null
+	fi
+	invoke-rc.d exagear start || exit $?
+fi
+# End automatically added section
+

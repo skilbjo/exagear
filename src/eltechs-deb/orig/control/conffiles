@@ -1,0 +1,4 @@
+/etc/sysctl.d/10-inotify.conf
+/etc/binfmt-x86.conf
+/etc/init.d/exagear
+/etc/exagear-activation.conf

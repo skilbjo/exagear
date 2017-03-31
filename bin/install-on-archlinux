@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -eou pipefail
+
+install-dependencies() {
+  sudo pacman -Syu --noconfirm bash \
+    coreutils \
+    findutils \
+    awk \
+    curl \
+    binfmt-support \
+    cronie \
+    alsa-base
+
+  yaourt install dpkg
+}
+
+install-exagear() {
+  echo "Installing the binary translator..."
+  dpkg -i exagear.deb || exit 1
+}
+
+install-ubuntu() {
+  echo "Installing the guest image..."
+  dpkg -i ubuntu.deb || exit 1
+}
+
+activate() {
+  echo "Installing the primary key..."
+  mv $PK_FILE_NAME /opt/exagear/lic/ || exit 1
+
+  echo "Activating the copy of ExaGear..."
+  /opt/exagear/bin/actool || exit 1
+}
+
+install-dependencies
+sudo bin/install-exagear-orig
+install-exagear
+install-ubuntu
+activate
+
+echo "Done!"

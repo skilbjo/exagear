@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -eou pipefail
+
+echo "sample deb_file: src/eltechs-deb/orig"
+
+deb_file=$1
+tmp_dir="tmp"
+
+read -p "Unpack $deb_file to $tmp_dir in $(pwd) ?" -n1 -r
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  mkdir "$tmp_dir"
+
+  dpkg-deb -R "$deb_file" "$tmp_dir"
+fi
+
+echo "Now edit files in $tmp_dir and run bin/pack-deb"
+
+
