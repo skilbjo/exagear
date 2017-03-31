@@ -1,0 +1,48 @@
+#! /bin/bash
+#
+# This is a maintainer pre-removal script for an ExaGear guest image package.
+#
+# Copyright (c) 2016 "Elbrus Technologies" LLC. All rights reserved.
+#
+# This script comes with NO warranty, not even for MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.
+#
+
+for rc in $(find /lib/systemd/system -type f -name '*.service' | xargs grep -l '__WRAPPED_FOR_EXAGEAR_GUEST_UBUNTU_1604') ; do
+    systemctl stop $(basename $rc | cut -d'.' --complement -f2-)
+    rm -f $rc
+    systemctl daemon-reload
+done
+
+for rc in $(find /etc/init/ -type f -name '*.conf' | xargs grep -l '__WRAPPED_FOR_EXAGEAR_GUEST_UBUNTU_1604') ; do
+    job_name=$(basename $rc | cut -d'.' --complement -f2-)
+    rm -f /etc/init/${job_name}.conf
+done
+
+for rc in $(find /etc/init.d/ -type f -executable | xargs grep -l '__WRAPPED_FOR_EXAGEAR_GUEST_UBUNTU_1604') ; do
+    service $(basename $rc) stop
+done
+
+for rc in $(find /etc/init.d/ -type f -executable | xargs grep -l '__WRAPPED_FOR_EXAGEAR_GUEST_UBUNTU_1604') ; do
+    rm -f /etc/rc*.d/*$(basename $rc)
+    rm -f $rc
+done
+
+rm -f /etc/cron.d/EG_*
+rm -f /etc/udev/rules.d/EG_*
+
+if [ "$(readlink /emul/x86-linux)" == "/opt/exagear/images/ubuntu-1604/" ] ; then
+    rm -f /emul/x86-linux
+fi
+
+function handle_error {
+    echo "Warning: failed to stop exagear services";
+    exit 0;
+}
+
+# Automatically added by dh_installinit
+if [ -x "/etc/init.d/exagear-guest-ubuntu-1604" ]; then
+	invoke-rc.d exagear-guest-ubuntu-1604 stop || handle_error
+fi
+# End automatically added section
+

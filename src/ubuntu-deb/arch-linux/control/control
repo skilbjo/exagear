@@ -1,0 +1,11 @@
+Package: exagear-guest-ubuntu-1604
+Version: 2
+Architecture: all
+Maintainer: ExaGear distribution maintainers <support@eltechs.com>
+Installed-Size: 331021
+Section: misc
+Priority: extra
+Homepage: http://eltechs.com
+Description: A minimal guest system to be run under ExaGear
+  A minimal installation of Ubuntu 16.04 tailored to be a template
+ for guest systems running under ExaGear.

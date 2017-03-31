@@ -1,0 +1,15 @@
+#
+# This is a maintainer pre-installation script for an ExaGear guest image package.
+#
+# Copyright (c) 2015 "Elbrus Technologies" LLC. All rights reserved.
+#
+# This script comes with NO warranty, not even for MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.
+#
+if [ -e /opt/exagear/images/ubuntu-1604 ] ; then
+    echo "It is not possible to update guest images with host tools."
+    echo "Use apt-get from within the guest to update it."
+    exit 1
+fi
+
+
