@@ -10,6 +10,14 @@ not arch linux.
 
 ## Install
 
+Make some aliases
+
+    sudo -s
+    echo alias arch="echo 'armv7l'" >> /root/.bashrc
+    alias realpath="/usr/bin/realpath" >> /root/.bashrc
+    alias bash="/usr/bin/bash" >> /root/.bashrc
+    alias awk="/usr/bin/awk" >> /root/.bashrc
+
 Clone this repo on the target ARM device.
 
     bin/pack-deb src/eltechs-deb/arch-linux/
